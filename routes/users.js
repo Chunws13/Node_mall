@@ -36,12 +36,12 @@ router.post("/login", async(req, res) => {
             return res.status(412).json({ errorMessage: "로그인 정보를 확인해주세요." });
         }
 
-        const token = jwt.sign({ useId: loginUser.userId }, "scerect-key");
+        const token = jwt.sign({ userId: loginUser.userId }, "scerect-key");
         return res.status(200).json({ token: `Bearer ${token}` });
 
     } catch (error) {
         console.log(error);
-        return res.satuts(400).json({ errorMessage: "로그인에 실패했습니다." });
+        return res.status(400).json({ errorMessage: "로그인에 실패했습니다." });
     }
 })
 

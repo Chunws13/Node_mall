@@ -46,7 +46,13 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             type: Sequelize.STRING
         },
+        productPrice: {
+            allowNull: false,
+            type: Sequelize.INTEGER,
+            defaultValue: 1000
+        },
         productName: {
+            unique: true,
             allowNull: false,
             type: Sequelize.STRING
         },
