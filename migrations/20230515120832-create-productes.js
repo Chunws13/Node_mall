@@ -15,10 +15,10 @@ module.exports = {
                 references: {
                     model: "Users",
                     key: "userId"
-                }
+                },
+                onDelete: "CASCADE"
             },
             productAmount: {
-                unique: true,
                 allowNull: false,
                 type: Sequelize.INTEGER
             },
@@ -27,8 +27,14 @@ module.exports = {
                 type: Sequelize.STRING
             },
             productName: {
+                unique: true,
                 allowNull: false,
                 type: Sequelize.STRING
+            },
+            productPrice: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+                defaultValue: 1000
             },
             hits: {
                 allowNull: false,

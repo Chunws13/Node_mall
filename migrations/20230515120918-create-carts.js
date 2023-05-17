@@ -15,7 +15,8 @@ module.exports = {
                 references: {
                     model: "Users",
                     key: "userId"
-                }
+                },
+                onDelete: "CASCADE"
             },
             productsId: {
                 allowNull: false,
@@ -23,7 +24,8 @@ module.exports = {
                 references: {
                     model: "Products",
                     key: "productsId"
-                }
+                },
+                onDelete: "CASCADE"
             },
             productAmount: {
                 allowNull: false,
