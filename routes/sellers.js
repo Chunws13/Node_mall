@@ -2,8 +2,29 @@ const express = require("express");
 const { Users, Products } = require('../models');
 const checkLogin = require('../middlewares/checkLogin.js');
 const checkSeller = require('../middlewares/checkSeller.js');
-const e = require("express");
 const router = express.Router();
+
+/**
+ * @swagger
+ * paths:
+ *  /api/seller:
+ *      get:
+ *          summary: "판매자 아이디별 등록한 상품 조회"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              token:
+ *                                  type: string
+ *          responses:
+ *              "200":
+ *                  description: "정상 조회"
+ * 
+ *              "400":
+ *                  description: "조회 실패"
+ */
 
 // 판매자별 등록 상품 조회
 router.get('/seller', checkLogin, checkSeller, async(req, res) => {
@@ -25,6 +46,38 @@ router.get('/seller', checkLogin, checkSeller, async(req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * paths:
+ *  /api/seller/upload:
+ *      post:
+ *          summary: "판매 상품 등록"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              token:
+ *                                  type: string
+ *                              productName:
+ *                                  type: string
+ *                              productAmount:
+ *                                  type: integer
+ *                              productPrice:
+ *                                  type: integer
+ *                              productLink:
+ *                                  type: string
+ * 
+ *          responses:
+ *              "200":
+ *                  description: "정상 등록 완료"
+ *              "412":
+ *                  description: "이름, 수량, 가격, 이미지 링크 중 1개 이상 누락"
+ *              "400":
+ *                  description: "상품 등록 실패"
+ */
+
 // 상품 업로드
 router.post('/seller/upload', checkLogin, checkSeller, async(req, res) => {
     try {
@@ -32,7 +85,7 @@ router.post('/seller/upload', checkLogin, checkSeller, async(req, res) => {
         const { productName, productAmount, productPrice, productLink } = req.body;
 
         if (!productName || !productAmount || !productLink || !productPrice) {
-            return res.status(400).json({ errorMessage: "상품 정보를 정확하게 등록 해주세요" });
+            return res.status(412).json({ errorMessage: "상품 정보를 정확하게 등록 해주세요" });
         }
 
         const existProcuct = await Products.findOne({
@@ -51,6 +104,67 @@ router.post('/seller/upload', checkLogin, checkSeller, async(req, res) => {
         return res.status(400).json({ errorMessage: "상품 등록 실패" });
     }
 });
+
+/**
+ * @swagger
+ * paths:
+ *  /api/seller/:productsId:
+ *      get:
+ *          summary: "판매 상품 상세 조회"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              token:
+ *                                  type: string
+ * 
+ *          responses:
+ *              "200":
+ *                  description: "제품 상세 페이지 정상 조회"
+ *              "400":
+ *                  description: "제품 상세 페이지 조회 실패"
+ * 
+ *      put:
+ *          summary: "판매 상품 금액 및 수량 수정"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              token:
+ *                                  type: string
+ *                              newAmount:
+ *                                  type: integer
+ *                              newPrice:
+ *                                  type: integer
+ * 
+ *          responses:
+ *              "200":
+ *                  description: "제품 정보 정상 수정"
+ *              "400":
+ *                  description: "제품 정보 수정 실패"
+ * 
+ * 
+ *      delete:
+ *          summary: "판매 상품 삭제"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              token:
+ *                                  type: string
+ * 
+ *          responses:
+ *              "200":
+ *                  description: "삭제 성공"
+ *              "400":
+ *                  description: "삭제 실패"
+ */
 
 // 상품 상세 조회
 router.get('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {

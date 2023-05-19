@@ -3,6 +3,33 @@ const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 
+/**
+ * @swagger
+ * paths:
+ *  /api/join:
+ *      post:
+ *          summary: "회원 가입 정보 전달"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              userName:
+ *                                  type: string
+ *                              userType:
+ *                                  type: string
+ *                              password:
+ *                                  type: string
+ *          responses:
+ *              "200":
+ *                  description: "회원 가입 성공"
+ *              "400":
+ *                  description: "회원 가입 실패"
+ *              "401":
+ *                  description : "userName 중복"
+ */
+
 // 회원가입
 router.post('/join', async(req, res) => {
     try {
@@ -24,6 +51,33 @@ router.post('/join', async(req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * paths:
+ *  /api/login:
+ *      post:
+ *          summary: "로그인"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              userName:
+ *                                  type: string
+ *                              userType:
+ *                                  type: string
+ *                              password:
+ *                                  type: string
+ *          responses:
+ *              "200":
+ *                  description: "로그인 성공, 인증 토큰 반환"
+ *              "400":
+ *                  description: "로그인 실패"
+ *              "412":
+ *                  description: "회원 정보 불일치"
+ */
+
 router.post("/login", async(req, res) => {
     try {
         const { userName, userType, password } = req.body;
@@ -40,7 +94,6 @@ router.post("/login", async(req, res) => {
         return res.status(200).json({ token: `Bearer ${token}` });
 
     } catch (error) {
-        console.log(error);
         return res.status(400).json({ errorMessage: "로그인에 실패했습니다." });
     }
 })
