@@ -9,7 +9,7 @@ const swaggerOptions = {
             description: 'API 문서를 위한 Swagger',
         },
         servers: [{
-            url: 'http://localhost:3000', // 서버 URL
+            url: '52.79.197.128', // 서버 URL
         }, ],
     },
     apis: ['./routes/*.js'], // API 경로 설정

@@ -47,7 +47,7 @@ router.post('/join', async(req, res) => {
         return res.status(200).json({ message: "회원가입이 완료되었습니다. " });
 
     } catch (error) {
-        return res.status(400).json({ errorMessage: "회원 가입에 실패했습니다." });
+        return res.status(400).json({ errorMessage: "회원 가입에 실패했습니다.", detail: error });
     }
 });
 
