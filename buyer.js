@@ -54,7 +54,7 @@ router.get('/buyer/:productId', checkLogin, checkBuyer, async(req, res) => {
 /////장바구니
 
 // 구매자의 장바구니 조회
-router.get('/buyer', checkLogin, checkBuyer, async(req, res) => {
+router.get('/buyer/cart', checkLogin, checkBuyer, async(req, res) => {
     try {
         const { userId } = res.locals.user; 
 
