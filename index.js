@@ -13,7 +13,7 @@ const corsOption = {
 }
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 app.use('/docs-api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', [usersRouter, sellersRouter]);
 
