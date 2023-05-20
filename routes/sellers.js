@@ -203,7 +203,7 @@ router.put('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
 })
 
 // 상품 삭제
-router.delete('/api/seller/:productId', checkLogin, checkSeller, async(req, res) => {
+router.delete('/seller/:productId', checkLogin, checkSeller, async(req, res) => {
     try {
         const { productId } = req.params;
         await Products.destroy({
