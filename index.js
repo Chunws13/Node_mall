@@ -1,7 +1,7 @@
 const express = require("express");
 const usersRouter = require('./routes/users.js');
 const sellersRouter = require('./routes/sellers.js');
-const buyersRouter = require('./routes/buyer.js');
+const buyersRouter = require('./routes/buyers.js');
 
 const swaggerUi = require('swagger-ui-express'); // swagger
 const swaggerDocs = require('./swagger.js');

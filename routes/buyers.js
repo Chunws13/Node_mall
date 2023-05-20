@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const checkLogin = require("../middlewares/checkLogin.js");
 const checkBuyer = require("../middlewares/checkBuyer.js");
-const { Products, Carts, Users } = require('../models');
+const { Products, Carts, Users } = require('../models/index.js');
 
-// 구매자의 전체 상품 조회
+// 구매자의 전체 상품 조회 - 우상
 router.get('/buyer', checkLogin, checkBuyer, async(req, res) => {
     try {
         const { userId } = res.locals.user; //전체 상품을 조회하려면?
@@ -29,7 +29,7 @@ router.get('/buyer', checkLogin, checkBuyer, async(req, res) => {
 });
 
 // 상품 상세 조회
-router.get('/buyer/:productsId', checkLogin, checkBuyer, async(req, res) => {
+router.get('/buyer/:productsId/detail', checkLogin, checkBuyer, async(req, res) => {
     try {
         const { userId } = res.locals.user; //?
         const { productsId } = req.params;
@@ -40,6 +40,28 @@ router.get('/buyer/:productsId', checkLogin, checkBuyer, async(req, res) => {
         });
 
         return res.status(200).json({ ProductDetail });
+
+    } catch (error) {
+        return res.status(400).json({ errorMessage: "페이지 로드 실패" });
+    }
+});
+
+// 구매자의 장바구니 조회
+router.get('/buyer/cart', checkLogin, checkBuyer, async(req, res) => {
+    try {
+        const { userId } = res.locals.user;
+
+        const allProductsIdInCarts = await Carts.findAll({
+            attributes: ["productsId", "productAmount", "createdAt"],
+            where: { userId },
+            include: [{
+                model: Products,
+                attributes: ["productName", "productPrice", "productAmount", "productLink"]
+            }]
+
+        });
+
+        return res.status(200).json({ allProductsIdInCarts });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "페이지 로드 실패" });
@@ -62,13 +84,6 @@ router.post('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =
             return res.status(400).json({ errorMessage: "이미 장바구니에 있는 상품 입니다." });
         } //
 
-        //해당 프로덕트 불러오기
-        // const productAmount = await Products.findOne({
-        //     attributes: ["productAmount"],
-        //     where: { productsId }
-        // });
-
-        // await Carts.create({ userId, productAmount, productLink, productPrice, productName, hits: 0 })
         await Carts.create({ userId, productsId, productAmount })
         return res.status(200).json({ message: "장바구니에 등록되었습니다." });
 
@@ -96,11 +111,11 @@ router.put('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =>
 })
 
 // 장바구니 삭제
-router.delete('/api/buyer/:productId', checkLogin, checkBuyer, async(req, res) => {
+router.delete('/api/buyer/:cartId', checkLogin, checkBuyer, async(req, res) => {
     try {
-        const { productId } = req.params;
+        const { cartId } = req.params;
         await Carts.destroy({
-            where: { productId }
+            where: { cartId }
         })
         return res.status(200).json({ message: "상품이 삭제되었습니다." });
 
