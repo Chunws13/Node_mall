@@ -137,19 +137,19 @@ router.get('/buyer/cart', checkLogin, checkBuyer, async(req, res) => {
 /**
  * @swagger
  * paths:
- *  /api/buyer/:productsId/cart
- *            post:
- *                     summary: "장바구니 등록"
- *                     requestBody:
- *                         content:
- *                             application/json:
- *                                 schema:
- *                                     type: object
- *                                     properties:
- *                                         token:
- *                                             type: string
- *                                         productAmount:
- *                                             type: integer
+ *  /api/buyer/:productsId/cart:
+ *      post:
+ *          summary: "장바구니 등록"
+ *          requestBody:
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              token:
+ *                                  type: string
+ *                              productAmount:
+ *                                  type: integer
  * 
  *          responses:
  *              "200":

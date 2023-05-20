@@ -91,7 +91,7 @@ router.post("/login", async(req, res) => {
         }
 
         const token = jwt.sign({ userId: loginUser.userId }, "scerect-key");
-        return res.status(200).json({ token: `Bearer ${token}` });
+        return res.status(200).json({ token: `Bearer ${token}`, userName: loginUser.userName, userType: loginUser.userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "로그인에 실패했습니다." });
