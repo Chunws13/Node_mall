@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             type: Sequelize.INTEGER
         },
-        userID: {
+        userId: {
             allowNull: false,
             type: Sequelize.INTEGER,
             references: {
