@@ -7,13 +7,11 @@ const cors = require('cors');
 const app = express();
 const port = 3000;
 
-const corsOption = {
+app.use(express.json());
+app.use(cors({
     origin: ['https://hanghae-shop-git-main-zadragon.vercel.app/', '*'],
     credentials: true
-}
-
-app.use(express.json());
-app.use(cors());
+}));
 app.use('/docs-api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api', [usersRouter, sellersRouter]);
 
