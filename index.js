@@ -8,7 +8,7 @@ const app = express();
 const port = 3000;
 
 const corsOption = {
-    origin: ['https://hanghae-shop-git-main-zadragon.vercel.app/', 'localhost'],
+    origin: ['https://hanghae-shop-git-main-zadragon.vercel.app/', '*'],
     credentials: true
 }
 
