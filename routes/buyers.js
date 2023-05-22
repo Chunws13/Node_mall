@@ -8,7 +8,7 @@ const { Products, Carts, Users } = require('../models/index.js');
  * @swagger
  * paths:
  *  /api/buyer:
- *      get:
+ *      post:
  *          summary: "구매자의 전체 상품 조회"
  *          requestBody:
  *              content:
@@ -27,7 +27,7 @@ const { Products, Carts, Users } = require('../models/index.js');
  */
 
 // 구매자의 전체 상품 조회
-router.get('/buyer', checkLogin, checkBuyer, async(req, res) => {
+router.post('/buyer', checkLogin, checkBuyer, async(req, res) => {
     try {
         const { userId } = res.locals.user; //전체 상품을 조회하려면?
 
@@ -54,7 +54,7 @@ router.get('/buyer', checkLogin, checkBuyer, async(req, res) => {
  * @swagger
  * paths:
  *  /api/buyer/:productsId/detail
- *      get:
+ *      post:
  *          summary: "상품 상세 조회"
  *          requestBody:
  *              content:
@@ -73,7 +73,7 @@ router.get('/buyer', checkLogin, checkBuyer, async(req, res) => {
  */
 
 // 상품 상세 조회
-router.get('/buyer/:productsId/detail', checkLogin, checkBuyer, async(req, res) => {
+router.post('/buyer/:productsId/detail', checkLogin, checkBuyer, async(req, res) => {
     try {
         const { userId } = res.locals.user; //?
         const { productsId } = req.params;
@@ -94,7 +94,7 @@ router.get('/buyer/:productsId/detail', checkLogin, checkBuyer, async(req, res) 
  * @swagger
  * paths:
  *  /api/buyer/cart:
- *      get:
+ *      post:
  *          summary: "구매자의 장바구니 조회"
  *          requestBody:
  *              content:
@@ -113,7 +113,7 @@ router.get('/buyer/:productsId/detail', checkLogin, checkBuyer, async(req, res) 
  */
 
 // 구매자의 장바구니 조회
-router.get('/buyer/cart', checkLogin, checkBuyer, async(req, res) => {
+router.post('/buyer/cart', checkLogin, checkBuyer, async(req, res) => {
     try {
         const { userId } = res.locals.user;
 

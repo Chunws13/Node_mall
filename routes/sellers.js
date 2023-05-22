@@ -8,7 +8,7 @@ const router = express.Router();
  * @swagger
  * paths:
  *  /api/seller:
- *      get:
+ *      post:
  *          summary: "판매자 아이디별 등록한 상품 조회"
  *          requestBody:
  *              content:
@@ -27,7 +27,7 @@ const router = express.Router();
  */
 
 // 판매자별 등록 상품 조회
-router.get('/seller', checkLogin, checkSeller, async(req, res) => {
+router.post('/seller', checkLogin, checkSeller, async(req, res) => {
     try {
         const { userId } = res.locals.user;
 
@@ -38,10 +38,9 @@ router.get('/seller', checkLogin, checkSeller, async(req, res) => {
                 ["createdAt", "DESC"]
             ]
         });
-
         return res.status(200).json({ userProducts });
-
-    } catch (error) {
+    
+    } catch (error) {    
         return res.status(400).json({ errorMessage: "페이지 로드 실패" });
     }
 });
@@ -109,7 +108,7 @@ router.post('/seller/upload', checkLogin, checkSeller, async(req, res) => {
  * @swagger
  * paths:
  *  /api/seller/:productsId:
- *      get:
+ *      post:
  *          summary: "판매 상품 상세 조회"
  *          requestBody:
  *              content:
@@ -167,7 +166,7 @@ router.post('/seller/upload', checkLogin, checkSeller, async(req, res) => {
  */
 
 // 상품 상세 조회
-router.get('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
+router.post('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
     try {
         const { userId } = res.locals.user;
         const { productsId } = req.params;
