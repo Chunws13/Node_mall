@@ -36,14 +36,19 @@ router.post('/buyer', checkLogin, checkBuyer, async(req, res) => {
             //where: { userId },
             include: [{
                 model: Users,
-                attributes: ['userName']
+                attributes: ['userId']
             }],
             order: [
                 ["createdAt", "DESC"]
             ]
         });
 
-        return res.status(200).json({ AllProducts });
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
+        return res.status(200).json({ AllProducts, userName, userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "페이지 로드 실패" });
@@ -75,15 +80,25 @@ router.post('/buyer', checkLogin, checkBuyer, async(req, res) => {
 // 상품 상세 조회
 router.post('/buyer/:productsId/detail', checkLogin, checkBuyer, async(req, res) => {
     try {
-        const { userId } = res.locals.user; //?
+        const { userId } = res.locals.user;
         const { productsId } = req.params;
+
 
         const ProductDetail = await Products.findOne({
             attributes: ["productName", "productAmount", "productPrice", "productLink", "hits", "createdAt", "updatedAt"],
             where: { productsId }
         });
 
-        return res.status(200).json({ ProductDetail });
+        await Products.update({ hits: ProductDetail.hits + 1 }, {
+            where: { productsId }
+        });
+
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
+        return res.status(200).json({ ProductDetail, userName, userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "페이지 로드 실패" });
@@ -118,16 +133,24 @@ router.post('/buyer/cart', checkLogin, checkBuyer, async(req, res) => {
         const { userId } = res.locals.user;
 
         const allProductsIdInCarts = await Carts.findAll({
-            attributes: ["productsId", "productAmount", "createdAt"],
+            attributes: ["cartsId", "productsId", "productAmount", "createdAt"],
             where: { userId },
             include: [{
                 model: Products,
                 attributes: ["productName", "productPrice", "productAmount", "productLink"]
-            }]
+            }],
+            order: [
+                ["createdAt", "DESC"]
+            ]
 
         });
 
-        return res.status(200).json({ allProductsIdInCarts });
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
+        return res.status(200).json({ allProductsIdInCarts, userName, userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "페이지 로드 실패" });
@@ -192,12 +215,17 @@ router.post('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =
             where: { productsId }
         });
 
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
         if (existProcuctInCart) {
             return res.status(400).json({ errorMessage: "이미 장바구니에 있는 상품 입니다." });
         } //
 
         await Carts.create({ userId, productsId, productAmount })
-        return res.status(200).json({ message: "장바구니에 등록되었습니다." });
+        return res.status(200).json({ message: "장바구니에 등록되었습니다.", userName, userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "장바구니 등록 실패" });
@@ -207,6 +235,7 @@ router.post('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =
 // 장바구니 상품 수량 수정
 router.put('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) => {
     try {
+        const { userId } = res.locals.user;
         const { productsId } = req.params;
         const { newAmount } = req.body;
 
@@ -214,7 +243,12 @@ router.put('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =>
             where: { productsId }
         });
 
-        return res.status(200).json({ message: "해당 제품의 수량이 수정되었습니다." });
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
+        return res.status(200).json({ message: "해당 제품의 수량이 수정되었습니다.", userName, userType });
 
     } catch (error) {
         console.log(error)
@@ -247,11 +281,18 @@ router.put('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =>
 // 장바구니 삭제
 router.delete('/api/buyer/:cartId', checkLogin, checkBuyer, async(req, res) => {
     try {
+        const { userId } = res.locals.user;
         const { cartId } = req.params;
         await Carts.destroy({
             where: { cartId }
         })
-        return res.status(200).json({ message: "상품이 삭제되었습니다." });
+
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
+        return res.status(200).json({ message: "상품이 삭제되었습니다.", userName, userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "상품 삭제 실패" });

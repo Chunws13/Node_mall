@@ -38,9 +38,15 @@ router.post('/seller', checkLogin, checkSeller, async(req, res) => {
                 ["createdAt", "DESC"]
             ]
         });
-        return res.status(200).json({ userProducts });
-    
-    } catch (error) {    
+
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
+        return res.status(200).json({ userProducts, userName, userType });
+
+    } catch (error) {
         return res.status(400).json({ errorMessage: "페이지 로드 실패" });
     }
 });
@@ -91,12 +97,18 @@ router.post('/seller/upload', checkLogin, checkSeller, async(req, res) => {
             attributes: ["productName"],
             where: { productName }
         });
+
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
         if (existProcuct) {
             return res.status(400).json({ errorMessage: "이미 사용중인 상품 이름입니다." });
         }
 
         await Products.create({ userId, productAmount, productLink, productPrice, productName, hits: 0 })
-        return res.status(200).json({ message: "상품이 등록되었습니다." });
+        return res.status(200).json({ message: "상품이 등록되었습니다.", userName, userType });
 
     } catch (error) {
         console.log(error)
@@ -165,7 +177,7 @@ router.post('/seller/upload', checkLogin, checkSeller, async(req, res) => {
  *                  description: "삭제 실패"
  */
 
-// 상품 상세 조회
+// 내가 등록한 상품 상세 조회
 router.post('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
     try {
         const { userId } = res.locals.user;
@@ -176,7 +188,12 @@ router.post('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
             where: { productsId }
         });
 
-        return res.status(200).json({ userProducts });
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        })
+
+        return res.status(200).json({ userProducts, userName, userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "페이지 로드 실패" });
@@ -186,6 +203,7 @@ router.post('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
 // 상품 수량 & 금액 수정
 router.put('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
     try {
+        const { userId } = res.locals.user;
         const { productsId } = req.params;
         const { newAmount, newPrice } = req.body;
 
@@ -193,7 +211,12 @@ router.put('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
             where: { productsId }
         });
 
-        return res.status(200).json({ message: "상품이 수정되었습니다." });
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        });
+
+        return res.status(200).json({ message: "상품이 수정되었습니다.", userName, userType });
 
     } catch (error) {
         console.log(error)
@@ -202,13 +225,20 @@ router.put('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
 })
 
 // 상품 삭제
-router.delete('/seller/:productId', checkLogin, checkSeller, async(req, res) => {
+router.delete('/seller/:productsId', checkLogin, checkSeller, async(req, res) => {
     try {
-        const { productId } = req.params;
+        const { userId } = res.locals.user;
+        const { productsId } = req.params;
         await Products.destroy({
-            where: { productId }
-        })
-        return res.status(200).json({ message: "상품이 삭제되었습니다." });
+            where: { productsId }
+        });
+
+        const { userName, userType } = await Users.findOne({
+            attributes: ["userName", "userType"],
+            where: { userId }
+        });
+
+        return res.status(200).json({ message: "상품이 삭제되었습니다.", userName, userType });
 
     } catch (error) {
         return res.status(400).json({ errorMessage: "상품 삭제 실패" });
