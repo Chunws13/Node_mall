@@ -279,22 +279,23 @@ router.put('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =>
  */
 
 // 장바구니 삭제
-router.delete('/api/buyer/:cartId', checkLogin, checkBuyer, async(req, res) => {
+router.delete('/buyer/:cartsId', checkLogin, checkBuyer, async(req, res) => {
     try {
         const { userId } = res.locals.user;
-        const { cartId } = req.params;
+        const { cartsId } = req.params;
         await Carts.destroy({
-            where: { cartId }
-        })
+            where: { cartsId }
+        });
 
         const { userName, userType } = await Users.findOne({
             attributes: ["userName", "userType"],
             where: { userId }
-        })
+        });
 
         return res.status(200).json({ message: "상품이 삭제되었습니다.", userName, userType });
 
     } catch (error) {
+        console.log(error)
         return res.status(400).json({ errorMessage: "상품 삭제 실패" });
     }
 })
