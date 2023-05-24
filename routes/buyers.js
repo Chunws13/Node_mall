@@ -308,13 +308,14 @@ router.post('/buyer/confirm/:productsId', checkLogin, checkBuyer, async(req, res
         const { productsId } = req.params;
 
         const targetProduct = await Products.findOne({
-            attributes: ["productsId"],
+            attributes: ["productAmount"],
             where: { productsId }
         });
 
         if (!targetProduct) {
             return res.status(400).json({ errorMessage: "해당 상품은 없는 상품입니다." });
         }
+
 
         if (targetProduct.productAmount < buyAmount) {
             return res.status(400).json({ errorMessage: "상품 수량이 부족합니다." });
