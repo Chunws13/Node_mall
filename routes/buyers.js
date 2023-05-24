@@ -212,7 +212,7 @@ router.post('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) =
 
         const existProcuctInCart = await Carts.findOne({
             attributes: ["productsId"],
-            where: { productsId }
+            where: { productsId, userId }
         });
 
         const { userName, userType } = await Users.findOne({
