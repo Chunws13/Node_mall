@@ -206,6 +206,7 @@ router.post('/buyer/cart', checkLogin, checkBuyer, async(req, res) => {
 // 장바구니 등록
 router.post('/buyer/:productsId/cart', checkLogin, checkBuyer, async(req, res) => {
     try {
+
         const { userId } = res.locals.user;
         const { productsId } = req.params;
         const { productAmount } = req.body;
@@ -297,6 +298,38 @@ router.delete('/buyer/:cartsId', checkLogin, checkBuyer, async(req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(400).json({ errorMessage: "상품 삭제 실패" });
+    }
+})
+
+router.post('/buyer/confirm/:productsId', checkLogin, checkBuyer, async(req, res) => {
+    try {
+        const { userName, userType } = res.locals.user;
+        const { buyAmount } = req.body;
+        const { productsId } = req.params;
+
+        const targetProduct = await Products.findOne({
+            attributes: ["productsId"],
+            where: { productsId }
+        });
+
+        if (!targetProduct) {
+            return res.status(400).json({ errorMessage: "해당 상품은 없는 상품입니다." });
+        }
+
+        if (targetProduct.productAmount < buyAmount) {
+            return res.status(400).json({ errorMessage: "상품 수량이 부족합니다." });
+        }
+
+        const modProductAmount = targetProduct.productAmount - buyAmount;
+
+        await Products.update({ productAmount: modProductAmount }, {
+            where: { productsId }
+        });
+        return res.status(200).json({ message: "구매 완료", userName, userType });
+
+    } catch (error) {
+        console.log(error)
+        return res.status(400).json({ errorMessage: "구매 실패" });
     }
 })
 
